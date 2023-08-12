@@ -19,7 +19,7 @@ To use the wrapper for a basic chat with the model:
 
 ```
 import openai
-from wrapper import _enhanced_chat_completion
+from wrappers_delight.wrapper import _enhanced_chat_completion
 
 # Set your OpenAI API key
 openai.api_key = "YOUR_API_KEY"
@@ -39,7 +39,7 @@ print(response.choices[0].message.content)
 To register and use a custom function:
 
 ```
-from wrapper import register_function
+from wrappers_delight.wrapper import _enhanced_chat_completion
 
 # Define and register a custom function
 def greet(name):
