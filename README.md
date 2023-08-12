@@ -4,7 +4,7 @@ wrappers_delight is a Python wrapper built around OpenAI's GPT-3 Chat API. It no
 To get started, you'll need to clone this repository:
 
 ```
-git clone https://github.com/your-username/wrappers_delight.git
+git clone https://github.com/yoheinakajima/wrappers_delight.git
 cd wrappers_delight
 ```
 
