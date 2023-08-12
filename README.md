@@ -44,7 +44,6 @@ from wrappers_delight.wrapper import _enhanced_chat_completion
 
 # Set your OpenAI API key
 openai.api_key = "YOUR_OPENAI_KEY"
-from wrappers_delight.wrapper import _enhanced_chat_completion
 
 completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo-0613",
