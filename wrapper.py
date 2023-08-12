@@ -22,24 +22,11 @@ def log_to_csv(params, response):
 
 def _enhanced_chat_completion(*args, **kwargs):
     
-    # If there's a function_call in the latest message, execute it before calling the original completion
-    latest_message = kwargs["messages"][-1]
-    if "function_call" in latest_message["content"]:
-        function_name = latest_message["content"]["function_call"]["name"]
-        function_args = json.loads(latest_message["content"]["function_call"]["arguments"])
-        
-        if function_name in _registered_functions:
-            function_response = _registered_functions[function_name](**function_args)
-            
-            kwargs["messages"].append({
-                "role": "function",
-                "name": function_name,
-                "content": function_response
-            })
-    
-    # Now call the original completion and log the response
     response = _original_chat_completion(*args, **kwargs)
-    log_to_csv(kwargs, response)
+
+    # If there's a function_call in the response, log the structured data
+    if 'function_call' in response.choices[0]['message']:
+        log_to_csv(kwargs, response)
     
     return response
 
