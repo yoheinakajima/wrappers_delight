@@ -1,5 +1,5 @@
 # Wrapper's Delight: An Enhanced OpenAI Wrapper
-wrappers_delight is a Python wrapper built around OpenAI's GPT-3 Chat API. The wrapper provides automated logging to a CSV file for every interaction without needing to change any existing code.
+wrappers_delight is a Python wrapper built around OpenAI's ChatCompletion API. The wrapper provides automated logging to a CSV file for every interaction without needing to change any existing code.
 
 To get started, you'll need to clone this repository:
 
