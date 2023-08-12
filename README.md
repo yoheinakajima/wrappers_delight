@@ -39,29 +39,55 @@ print(response.choices[0].message.content)
 To register and use a custom function:
 
 ```
+import openai
 from wrappers_delight.wrapper import _enhanced_chat_completion
 
-# Define and register a custom function
-def greet(name):
-    return f"Hello, {name}!"
+# Set your OpenAI API key
+openai.api_key = "<<YOUR-OPENAI-KEY>>"
+from wrappers_delight.wrapper import _enhanced_chat_completion
 
-register_function("greet_function", greet)
-
-# Use the function in a conversation
-response = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
+completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo-0613",
     messages=[
-        {"role": "system", "content": "You are a helpful assistant."},
-        {"role": "user", "content": {
-            "function_call": {
-                "name": "greet_function",
-                "arguments": json.dumps({"name": "Alice"})
-            }
-        }},
-    ]
+        {
+            "role": "user", 
+            "content": "I visited Tokyo, then moved to San Francisco, and finally settled in Toronto."
+        }
+    ],
+    functions=[
+        {
+            "name": "extract_locations",
+            "description": "Extract all locations mentioned in the text",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "locations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "description": "The name of the location"
+                                },
+                                "country_iso_alpha2": {
+                                    "type": "string",
+                                    "description": "The ISO alpha-2 code of the country where the location is situated"
+                                }
+                            },
+                            "required": ["name", "country_iso_alpha2"]
+                        }
+                    }
+                },
+                "required": ["locations"],
+            },
+        },
+    ],
+    function_call={"name": "extract_locations"}
 )
 
-print(response.choices[0].message.content)
+response_data = completion.choices[0]['message']['function_call']['arguments']
+print(response_data)
 ```
 ## Logging
 All interactions with the model are automatically logged to log.csv. Each row in the CSV consists of the request parameters and the corresponding model response.
