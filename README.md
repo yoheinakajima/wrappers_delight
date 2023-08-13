@@ -17,7 +17,7 @@ pip install openai
 ```
 # Usage
 ## Basic Chat Completion
-To use the wrapper for a basic chat with the model:
+To use the wrapper for a basic chat with the model, load the wrapper and every prompt input and output will be stored:
 
 ```
 import openai
@@ -94,7 +94,7 @@ print(response_data)
 All interactions with the model are automatically logged to log.csv. Each row in the CSV consists of the request parameters and the corresponding model response.
 
 # Analytics
-To run the analytics and visualize the model's usage:
+To run the analytics and visualize the model's usage, load the analytics:
 ```
 from wrappers_delight.analytics import plot_token_usage, plot_model_distribution
 
@@ -103,7 +103,7 @@ plot_token_usage()
 plot_model_distribution()
 ```
 # Query Logs
-To enable querying your logs:
+To enable querying your logs, load the two query functions:
 ```
 from wrappers_delight.analytics import query_log, query_log_with_ai
 ```
