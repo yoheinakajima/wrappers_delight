@@ -103,6 +103,10 @@ plot_token_usage()
 plot_model_distribution()
 ```
 # Query Logs
+To enable querying your logs:
+```
+from wrappers_delight.analytics import query_log, query_log_with_ai
+```
 *query_log()* and *query_log_with_ai()* are functions that serve to retrieve specific entries from logs. While query_log directly queries the log based on various parameters, query_log_with_ai uses an AI model to further refine those results based on context or more complex requirements.
 ## Prerequisits
 Ensure you have the required libraries installed. This includes pandas, openai, and others depending on your needs.
