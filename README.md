@@ -1,13 +1,15 @@
 # Wrapper's Delight: An Enhanced OpenAI Wrapper
-wrappers_delight is a Python wrapper built around OpenAI's ChatCompletion API. The wrapper provides automated logging to a CSV file for every interaction without needing to change any existing code.
+wrappers_delight is a Python wrapper built around OpenAI's ChatCompletion API. The main features of this wrapper are:
 
+Automated logging to a CSV file for every interaction.
+Analytics functions for visualizing model usage.
 To get started, you'll need to clone this repository:
 
 ```
 git clone https://github.com/yoheinakajima/wrappers_delight.git
 cd wrappers_delight
 ```
-
+## Prerequisites
 Ensure you have OpenAI's Python client installed:
 
 ```
@@ -90,6 +92,16 @@ print(response_data)
 ```
 ## Logging
 All interactions with the model are automatically logged to log.csv. Each row in the CSV consists of the request parameters and the corresponding model response.
+
+## Analytics
+To run the analytics and visualize the model's usage:
+```
+from wrappers_delight.analytics import plot_token_usage, plot_model_distribution
+
+# Generate and display the analytics plots
+plot_token_usage()
+plot_model_distribution()
+```
 
 ## Contributing
 If you'd like to contribute, please fork the repository and make changes as you'd like. Pull requests are warmly welcomed.
