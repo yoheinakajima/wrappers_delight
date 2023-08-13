@@ -1,23 +1,22 @@
 import openai
 import json
 import csv
+import datetime
 
-# Save the original chat completion method
 _original_chat_completion = openai.ChatCompletion.create
 
 def log_to_csv(params, response):
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    model = params.get("model", "")
+    total_tokens = response["usage"]["total_tokens"]
+    
     with open("log.csv", mode='a', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
-        writer.writerow([json.dumps(params), json.dumps(response)])
+        writer.writerow([timestamp, json.dumps(params), json.dumps(response), total_tokens, model])
 
 def _enhanced_chat_completion(*args, **kwargs):
-    
     response = _original_chat_completion(*args, **kwargs)
-    
-    # Log every response regardless of whether there's a function_call or not
     log_to_csv(kwargs, response)
-    
     return response
 
-# Override the chat completion method
 openai.ChatCompletion.create = _enhanced_chat_completion
