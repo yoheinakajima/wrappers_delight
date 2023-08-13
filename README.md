@@ -93,7 +93,7 @@ print(response_data)
 ## Logging
 All interactions with the model are automatically logged to log.csv. Each row in the CSV consists of the request parameters and the corresponding model response.
 
-## Analytics
+# Analytics
 To run the analytics and visualize the model's usage:
 ```
 from wrappers_delight.analytics import plot_token_usage, plot_model_distribution
@@ -102,6 +102,96 @@ from wrappers_delight.analytics import plot_token_usage, plot_model_distribution
 plot_token_usage()
 plot_model_distribution()
 ```
+# Query Logs
+*query_log()* and *query_log_with_ai()* are functions that serve to retrieve specific entries from logs. While query_log directly queries the log based on various parameters, query_log_with_ai uses an AI model to further refine those results based on context or more complex requirements.
+## Prerequisits
+Ensure you have the required libraries installed. This includes pandas, openai, and others depending on your needs.
+## using query_log()
+Parameters:
+* columns: List of columns to be displayed in the result.
+* start_date: The starting date for the logs you want to retrieve.
+* end_date: The end date for the logs.
+* min_tokens: Minimum number of tokens in the response.
+* max_tokens: Maximum number of tokens in the response.
+* filter_by: Additional filter criteria.
+* sort_by: The column by which the results should be sorted (default is timestamp).
+* limit: Limit the number of rows in the result.
+* keyword: Search for a keyword in user message or response.
+* function_name: Filter by the function name.
+* model_version: Filter by model version.
+
+Sample Code:
+
+```
+result = query_log(start_date="2023-08-01", end_date="2023-08-10", keyword="weather")
+print(result)
+```
+## using query_log_with_ai
+This function interprets natural language user queries and translates them into parameters to fetch appropriate log entries using the query_log function.
+Example Usage:
+User Query:
+```
+result = query_log_with_ai("Show me the last 3 logs.")
+```
+Expected Parameters for query_log:
+```
+{
+    "limit": 3,
+    "sort_by": "timestamp"
+}
+```
+User Query:
+```
+result = query_log_with_ai("I'd like to see the top 5 logs that mention 'weather'.")
+```
+Expected Parameters for query_log:
+```
+{
+    "keyword": "weather",
+    "limit": 5
+}
+```
+User Query:
+```
+result = query_log_with_ai("Can you display the logs sorted by total tokens for the gpt-3.5-turbo model, but only show the timestamp, model, and total tokens columns?
+")
+```
+Expected Parameters for query_log:
+```
+{
+    "model_version": "gpt-3.5-turbo",
+    "sort_by": "total_tokens",
+    "columns": ["timestamp", "model", "total_tokens"]
+}
+```
+User Query:
+```
+result = query_log_with_ai("I want logs that used between 50 to 1000 tokens and only used the gpt-3.5-turbo model.")
+```
+Expected Parameters for query_log:
+```
+{
+    "min_tokens": 50,
+    "max_tokens": 1000,
+    "filter_by": {
+        "model": "gpt-3.5-turbo"
+    }
+}
+```
+User Query:
+```
+result = query_log_with_ai("Show me the logs from August 12th to August 14th.")
+```
+Expected Parameters for query_log:
+```
+{
+    "start_date": "2023-08-12",
+    "end_date": "2023-08-14"
+}
+```
+## Automatic Storage of Log Queries
+* The results are stored in the *log_queries* directory with a unique filename.
+* Always ensure that sensitive data is properly handled and not exposed.
 
 ## Contributing
 If you'd like to contribute, please fork the repository and make changes as you'd like. Pull requests are warmly welcomed.
