@@ -4,6 +4,8 @@
 * Automated logging to a CSV file for every interaction.
 * Analytics functions for visualizing model usage.
 * Parameter-based or AI-assisted querying of logs.
+
+
 To get started, you'll need to clone this repository:
 
 ```
