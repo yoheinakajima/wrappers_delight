@@ -1,9 +1,10 @@
 # Wrapper's Delight: An Enhanced OpenAI Wrapper
 **`wrappers_delight`** is a Python wrapper built around OpenAI's ChatCompletion API. The main features of this wrapper are:
 
-* Automated logging to a CSV file for every interaction.
+* Automated logging to a NDJSON file for every interaction.
 * Analytics functions for visualizing model usage.
 * Parameter-based or AI-assisted querying of logs.
+* (Optional) Automated reflection and suggested improvements on every prompt.
 
 
 To get started, you'll need to clone this repository:
@@ -94,9 +95,9 @@ response_data = completion.choices[0]['message']['function_call']['arguments']
 print(response_data)
 ```
 ## Logging
-All interactions with the model are automatically logged to log.csv. Each row in the CSV consists of the request parameters and the corresponding model response.
+All interactions with the model are automatically logged to log.ndjson. Each row in the NDJSON consists of the request parameters and the corresponding model response.
 ## Example Output
-The following are 2 example outputs in log.csv. The first is a standard ChatCompletion call, the second is a function call:
+The following are 2 example outputs in log.ndjson. The first is a standard ChatCompletion call, the second is a function call:
 ```
 {"timestamp": "2023-08-13 03:00:49", "params": {"model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Tell me a fun fact."}]}, "response": {"id": "chatcmpl-7mvdPu0H1QULvDZOUVJS6npdMslul", "object": "chat.completion", "created": 1691895647, "model": "gpt-3.5-turbo-0613", "choices": [{"index": 0, "message": {"role": "assistant", "content": "Sure! Here's a fun fact: Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible! Honey's low moisture content and acidic pH create an inhospitable environment for bacteria and other microorganisms, allowing it to last indefinitely."}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 23, "completion_tokens": 70, "total_tokens": 93}}, "total_tokens": 93, "model": "gpt-3.5-turbo"}
 {"timestamp": "2023-08-13 03:01:16", "params": {"model": "gpt-3.5-turbo-0613", "messages": [{"role": "user", "content": "I visited Tokyo, then moved to San Francisco, and finally settled in Toronto."}], "functions": [{"name": "extract_locations", "description": "Extract all locations mentioned in the text", "parameters": {"type": "object", "properties": {"locations": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string", "description": "The name of the location"}, "country_iso_alpha2": {"type": "string", "description": "The ISO alpha-2 code of the country where the location is situated"}}, "required": ["name", "country_iso_alpha2"]}}}, "required": ["locations"]}}], "function_call": {"name": "extract_locations"}}, "response": {"id": "chatcmpl-7mvdqfScl0uQ2tfye1HdfcPEV5XYI", "object": "chat.completion", "created": 1691895674, "model": "gpt-3.5-turbo-0613", "choices": [{"index": 0, "message": {"role": "assistant", "content": null, "function_call": {"name": "extract_locations", "arguments": "{\n  \"locations\": [\n    {\n      \"name\": \"Tokyo\",\n      \"country_iso_alpha2\": \"JP\"\n    },\n    {\n      \"name\": \"San Francisco\",\n      \"country_iso_alpha2\": \"US\"\n    },\n    {\n      \"name\": \"Toronto\",\n      \"country_iso_alpha2\": \"CA\"\n    }\n  ]\n}"}}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 83, "completion_tokens": 74, "total_tokens": 157}}, "total_tokens": 157, "model": "gpt-3.5-turbo-0613"}
@@ -208,8 +209,36 @@ The *`query_log_with_ai()`* function will automatically use the generated parame
 * The results are stored in the *log_queries* directory with a unique filename.
 * Always ensure that sensitive data is properly handled and not exposed.
 
-## Contributing
+# Enabling and Using the Reflection Feature
+The reflection capability provides insights into how the OpenAI model interpreted given prompts, evaluating its responses and suggesting potential improvements. This feature is integrated into the `wrapper.ChatWrapper`, making it easy to enable or disable.
+
+## How to Enable:
+1. Enable Reflection: Simply use the following line to enable the reflection feature for all subsequent ChatCompletion calls:
+```
+wrapper.ChatWrapper.enable_reflection()
+```
+This will automatically turn on reflection for all chat completion API calls made using the `ChatWrapper`.
+
+2. Disable Reflection: If you wish to turn off the reflection feature:
+```
+wrapper.ChatWrapper.disable_reflection()
+```
+## Storage of Reflections:
+
+Reflections are recorded and stored in the `prompt_reflections.ndjson` file. Each entry within this file represents a distinct reflection and is formatted as a newline-delimited JSON (NDJSON). This allows for easier appending of new reflections and streamlined parsing.
+
+The structure for each reflection entry is as follows:
+
+- **kwargs**: This contains the input prompt provided to the OpenAI model.
+- **reflection**: 
+  - **Analysis**: Insights into how the AI interpreted the prompt and the rationale behind its response.
+  - **Is Satisfactory**: Indicates whether the AI believes its response was satisfactory. It can be `True` or `False`.
+  - **Suggested Prompt**: If the AI feels the prompt could be clearer or more optimized, this provides a suggested improvement.
+
+Remember, reflections will be recorded in `prompt_reflections.ndjson` irrespective of whether the reflection feature is turned on or off.
+
+# Contributing
 If you'd like to contribute, please fork the repository and make changes as you'd like. Pull requests are warmly welcomed.
 
-## License
+# License
 Distributed under the MIT License. See LICENSE for more information.
