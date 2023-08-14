@@ -3,6 +3,7 @@ import openai
 from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
+from .wrapper import _original_chat_completion
 
 LOG_FILE = 'log.ndjson'
 
@@ -219,7 +220,7 @@ def query_log_with_ai(natural_language_input):
     ]
 
     # Send the messages to OpenAI's ChatCompletion API
-    response = openai.ChatCompletion.create(
+    response = _original_chat_completion(
         model="gpt-3.5-turbo",
         messages=messages
     )
