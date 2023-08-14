@@ -1,6 +1,7 @@
 import openai
 import json
 import datetime
+import time
 
 _original_chat_completion = openai.ChatCompletion.create
 
@@ -16,13 +17,14 @@ class ChatWrapper:
         ChatWrapper.reflection_enabled = False
 
     @staticmethod
-    def log_to_ndjson(params, response):
+    def log_to_ndjson(params, response, response_time):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         model = params.get("model", "")
         total_tokens = response["usage"]["total_tokens"]
 
         log_entry = {
             "timestamp": timestamp,
+            "response_time": response_time,
             "params": params,
             "response": response,
             "total_tokens": total_tokens,
@@ -34,8 +36,12 @@ class ChatWrapper:
 
     @staticmethod
     def enhanced_chat_completion(*args, **kwargs):
+        timestamp_start = time.perf_counter()
         response = _original_chat_completion(*args, **kwargs)
-        ChatWrapper.log_to_ndjson(kwargs, response)
+        timestamp_end = time.perf_counter()    
+        response_time = timestamp_end - timestamp_start
+        
+        ChatWrapper.log_to_ndjson(kwargs, response, response_time)
 
         if ChatWrapper.reflection_enabled:
             from .reflection import generate_prompt_reflection
