@@ -25,7 +25,7 @@ To use the wrapper for a basic chat with the model, load the wrapper and every p
 **Aside from line 2, this is a standard OpenAI ChatCompletion call.*
 ```
 import openai
-from wrappers_delight.wrapper import _enhanced_chat_completion
+from wrappers_delight import wrapper
 
 # Set your OpenAI API key
 openai.api_key = "YOUR_API_KEY"
