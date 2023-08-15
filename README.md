@@ -99,18 +99,20 @@ All interactions with the model are automatically logged to log.ndjson. Each row
 ## Example Output
 The following are 2 example outputs in log.ndjson. The first is a standard ChatCompletion call, the second is a function call:
 ```
-{"timestamp": "2023-08-13 03:00:49", "params": {"model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Tell me a fun fact."}]}, "response": {"id": "chatcmpl-7mvdPu0H1QULvDZOUVJS6npdMslul", "object": "chat.completion", "created": 1691895647, "model": "gpt-3.5-turbo-0613", "choices": [{"index": 0, "message": {"role": "assistant", "content": "Sure! Here's a fun fact: Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible! Honey's low moisture content and acidic pH create an inhospitable environment for bacteria and other microorganisms, allowing it to last indefinitely."}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 23, "completion_tokens": 70, "total_tokens": 93}}, "total_tokens": 93, "model": "gpt-3.5-turbo"}
-{"timestamp": "2023-08-13 03:01:16", "params": {"model": "gpt-3.5-turbo-0613", "messages": [{"role": "user", "content": "I visited Tokyo, then moved to San Francisco, and finally settled in Toronto."}], "functions": [{"name": "extract_locations", "description": "Extract all locations mentioned in the text", "parameters": {"type": "object", "properties": {"locations": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string", "description": "The name of the location"}, "country_iso_alpha2": {"type": "string", "description": "The ISO alpha-2 code of the country where the location is situated"}}, "required": ["name", "country_iso_alpha2"]}}}, "required": ["locations"]}}], "function_call": {"name": "extract_locations"}}, "response": {"id": "chatcmpl-7mvdqfScl0uQ2tfye1HdfcPEV5XYI", "object": "chat.completion", "created": 1691895674, "model": "gpt-3.5-turbo-0613", "choices": [{"index": 0, "message": {"role": "assistant", "content": null, "function_call": {"name": "extract_locations", "arguments": "{\n  \"locations\": [\n    {\n      \"name\": \"Tokyo\",\n      \"country_iso_alpha2\": \"JP\"\n    },\n    {\n      \"name\": \"San Francisco\",\n      \"country_iso_alpha2\": \"US\"\n    },\n    {\n      \"name\": \"Toronto\",\n      \"country_iso_alpha2\": \"CA\"\n    }\n  ]\n}"}}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 83, "completion_tokens": 74, "total_tokens": 157}}, "total_tokens": 157, "model": "gpt-3.5-turbo-0613"}
+{"timestamp": "2023-08-13 03:00:49", "response_time": 3.21, "params": {"model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": "You are a helpful assistant."}, {"role": "user", "content": "Tell me a fun fact."}]}, "response": {"id": "chatcmpl-7mvdPu0H1QULvDZOUVJS6npdMslul", "object": "chat.completion", "created": 1691895647, "model": "gpt-3.5-turbo-0613", "choices": [{"index": 0, "message": {"role": "assistant", "content": "Sure! Here's a fun fact: Did you know that honey never spoils? Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible! Honey's low moisture content and acidic pH create an inhospitable environment for bacteria and other microorganisms, allowing it to last indefinitely."}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 23, "completion_tokens": 70, "total_tokens": 93}}, "total_tokens": 93, "model": "gpt-3.5-turbo"}
+{"timestamp": "2023-08-13 03:01:16", "response_time": 4.80, "params": {"model": "gpt-3.5-turbo-0613", "messages": [{"role": "user", "content": "I visited Tokyo, then moved to San Francisco, and finally settled in Toronto."}], "functions": [{"name": "extract_locations", "description": "Extract all locations mentioned in the text", "parameters": {"type": "object", "properties": {"locations": {"type": "array", "items": {"type": "object", "properties": {"name": {"type": "string", "description": "The name of the location"}, "country_iso_alpha2": {"type": "string", "description": "The ISO alpha-2 code of the country where the location is situated"}}, "required": ["name", "country_iso_alpha2"]}}}, "required": ["locations"]}}], "function_call": {"name": "extract_locations"}}, "response": {"id": "chatcmpl-7mvdqfScl0uQ2tfye1HdfcPEV5XYI", "object": "chat.completion", "created": 1691895674, "model": "gpt-3.5-turbo-0613", "choices": [{"index": 0, "message": {"role": "assistant", "content": null, "function_call": {"name": "extract_locations", "arguments": "{\n  \"locations\": [\n    {\n      \"name\": \"Tokyo\",\n      \"country_iso_alpha2\": \"JP\"\n    },\n    {\n      \"name\": \"San Francisco\",\n      \"country_iso_alpha2\": \"US\"\n    },\n    {\n      \"name\": \"Toronto\",\n      \"country_iso_alpha2\": \"CA\"\n    }\n  ]\n}"}}, "finish_reason": "stop"}], "usage": {"prompt_tokens": 83, "completion_tokens": 74, "total_tokens": 157}}, "total_tokens": 157, "model": "gpt-3.5-turbo-0613"}
 ```
 
 # Analytics
 To run the analytics and visualize the model's usage, load the analytics:
 ```
-from wrappers_delight.analytics import plot_token_usage, plot_model_distribution
+from wrappers_delight.analytics import plot_token_usage, plot_model_distribution, plot_response_time_distribution
 
 # Generate and display the analytics plots
 plot_token_usage()
 plot_model_distribution()
+plot_response_time()
+plot_response_time_distribution()
 ```
 # Query Logs
 To enable querying your logs, load the two query functions:
@@ -118,7 +120,7 @@ To enable querying your logs, load the two query functions:
 from wrappers_delight.analytics import query_log, query_log_with_ai
 ```
 *query_log()* and *query_log_with_ai()* are functions that serve to retrieve specific entries from logs. While query_log directly queries the log based on various parameters, query_log_with_ai uses an AI model to further refine those results based on context or more complex requirements.
-## Prerequisits
+## Prerequisites
 Ensure you have the required libraries installed. This includes pandas, openai, and others depending on your needs.
 ## using query_log()
 Parameters:
