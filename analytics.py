@@ -32,6 +32,18 @@ def plot_model_distribution():
     plt.title("Model Usage Distribution")
     plt.savefig("model_distribution.png")
 
+def plot_response_time():
+    data = pd.read_json(LOG_FILE, lines=True)
+    dates = data['timestamp']
+    token_counts = data['response_time']
+    
+    plt.plot(dates, token_counts)
+    plt.xticks(rotation=45)
+    plt.ylabel("Response Time (s)")
+    plt.xlabel("Timestamp")
+    plt.title("Response Time Over Time")
+    plt.tight_layout()
+    plt.savefig("response_time.png")
 
 def query_log(columns=None, start_date=None, end_date=None, min_tokens=None, 
               max_tokens=None, filter_by=None, sort_by='timestamp', limit=None, keyword=None, 
