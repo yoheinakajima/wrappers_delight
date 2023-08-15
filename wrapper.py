@@ -24,7 +24,7 @@ class ChatWrapper:
 
         log_entry = {
             "timestamp": timestamp,
-            "response_time": response_time,
+            "response_time": round(response_time, 2),
             "params": params,
             "response": response,
             "total_tokens": total_tokens,
