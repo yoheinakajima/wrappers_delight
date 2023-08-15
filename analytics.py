@@ -23,6 +23,7 @@ def plot_token_usage():
     plt.title("Token Usage Over Time")
     plt.tight_layout()
     plt.savefig("token_usage.png")
+    plt.cla()
 
 def plot_model_distribution():
     data = pd.read_json(LOG_FILE, lines=True)
@@ -31,19 +32,21 @@ def plot_model_distribution():
     plt.pie(models.values(), labels=models.keys(), autopct='%1.1f%%')
     plt.title("Model Usage Distribution")
     plt.savefig("model_distribution.png")
+    plt.cla()
 
-def plot_response_time():
+def plot_response_time_distribution():
     data = pd.read_json(LOG_FILE, lines=True)
     dates = data['timestamp']
-    token_counts = data['response_time']
+    response_times = data['response_time']
     
-    plt.plot(dates, token_counts)
+    plt.plot(dates, response_times)
     plt.xticks(rotation=45)
     plt.ylabel("Response Time (s)")
     plt.xlabel("Timestamp")
     plt.title("Response Time Over Time")
     plt.tight_layout()
     plt.savefig("response_time.png")
+    plt.cla()
 
 def query_log(columns=None, start_date=None, end_date=None, min_tokens=None, 
               max_tokens=None, filter_by=None, sort_by='timestamp', limit=None, keyword=None, 
